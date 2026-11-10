@@ -1,0 +1,386 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f7f8fc">
+    <meta name="description" content="Create a thoughtful, professional resume in minutes. Fill in your experience, preview your story, and print a polished copy.">
+    <title> CV GENERATOR APPLICATION </title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{% static 'app/styles.css' %}">
+
+</head>
+<body>
+
+    <header class="site-header">
+        <a class="brand" href="{% url 'accept' %}" aria-label="Resume Studio home">
+            <span class="brand-mark">r<span>.</span></span>
+            <span> Resume <span class="brand-light"> Studio </span></span>
+        </a>
+        <nav class="site-nav" aria-label="Main navigation">
+            <a href="#how-it-works">How it works</a>
+            <a class="nav-cta" href="#builder">Build my resume <span aria-hidden="true">↗</span></a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-copy">
+                <div class="eyebrow"><span class="eyebrow-dot"></span> YOUR NEXT CHAPTER STARTS HERE</div>
+                <h1>Your experience.<br><span>Your next opportunity.</span></h1>
+                <p class="hero-description">Turn what you’ve done into a resume that feels like you—and gets you one step closer to what’s next.</p>
+                <a class="button button-primary hero-button" href="#builder">Create your resume <span aria-hidden="true">→</span></a>
+                <div class="hero-proof"><span class="proof-stars" aria-hidden="true">★★★★★</span><span>Simple, thoughtful, and all yours.</span></div>
+            </div>
+            <div class="hero-art" aria-label="Preview of a clean professional resume">
+                <div class="floating-note note-top"><span class="note-icon">✳</span> Your story, beautifully told</div>
+                <div class="paper paper-back"></div>
+                <div class="paper paper-front">
+                    <div class="mini-resume-top">
+                        <div class="mini-avatar">AM</div>
+                        <div><div class="mini-name">Alex Morgan</div><div class="mini-role">PRODUCT DESIGNER</div></div>
+                    </div>
+                    <div class="mini-line mini-line-long"></div>
+                    <div class="mini-line mini-line-medium"></div>
+                    <div class="mini-heading">EXPERIENCE</div>
+                    <div class="mini-entry"><span></span><i></i><i></i></div>
+                    <div class="mini-entry"><span></span><i></i><i></i></div>
+                    <div class="mini-heading">EDUCATION</div>
+                    <div class="mini-entry mini-entry-short"><span></span><i></i></div>
+                    <div class="mini-skills"><b>DESIGN</b><b>STRATEGY</b><b>RESEARCH</b></div>
+                </div>
+                <div class="floating-note note-bottom"><span class="note-check">✓</span> Ready for your next big thing</div>
+                <div class="hero-sparkle sparkle-one">✳</div>
+                <div class="hero-sparkle sparkle-two">✦</div>
+            </div>
+        </section>
+
+        <section class="steps-strip" id="how-it-works" aria-label="How it works">
+            <div class="step-item"><span class="step-number">01</span><span><strong>Share your story</strong><small>Add the details that matter</small></span></div>
+            <span class="step-divider" aria-hidden="true"></span>
+            <div class="step-item"><span class="step-number">02</span><span><strong>See it take shape</strong><small>Preview your resume as you go</small></span></div>
+            <span class="step-divider" aria-hidden="true"></span>
+            <div class="step-item"><span class="step-number">03</span><span><strong>Take it with you</strong><small>Print or save as a PDF</small></span></div>
+        </section>
+
+        <section class="builder-section" id="builder">
+            <div class="section-heading">
+                <div>
+                    <div class="eyebrow">LET’S MAKE SOMETHING GREAT</div>
+                    <h2>A resume that feels like <span>you.</span></h2>
+                    <p>Start with the essentials. You can refine your story as you go.</p>
+                </div>
+                <div class="step-pill"><span>✦</span> Your details stay yours</div>
+            </div>
+
+            <section class="import-resume-card" aria-labelledby="import-resume-title">
+                <div class="import-resume-copy">
+                    <span class="import-resume-mark" aria-hidden="true">↑</span>
+                    <div>
+                        <h3 id="import-resume-title">Already have a resume?</h3>
+                        <p>Upload a PDF, Word document, or text file. We’ll prefill what we can—review and edit every detail before creating your new resume.</p>
+                        <small>Your file is only used to read its text. Scanned PDFs may need OCR before they can be imported.</small>
+                    </div>
+                </div>
+                <form class="import-resume-form" method="post" action="{% url 'accept' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="import_resume" value="1">
+                    <div class="import-file-field">
+                        {{ import_form.resume_file }}
+                        {% if import_form.resume_file.help_text %}<small class="field-hint">{{ import_form.resume_file.help_text }}</small>{% endif %}
+                        {% for error in import_form.resume_file.errors %}<span class="field-error" role="alert">{{ error }}</span>{% endfor %}
+                    </div>
+                    <button class="button button-primary import-button" type="submit">Import and review</button>
+                </form>
+            </section>
+            {% if imported %}
+            <p class="import-success" role="status">We filled in the details we could find. Please review them, complete anything missing, and then create your resume.</p>
+            {% endif %}
+
+            <div class="builder-grid">
+                <form id="profile-builder-form" class="builder-card" method="post" action="{% url 'accept' %}" novalidate>
+                    {% csrf_token %}
+                    {{ form.text_alignment }}
+                    {% if form.errors %}
+                        <div class="form-alert form-validation-summary" id="form-validation-summary" role="alert" tabindex="-1">
+                            <strong>Your resume hasn’t been created yet. Fix the following and submit again:</strong>
+                            <ul>
+                                {% for field in form %}
+                                    {% for error in field.errors %}
+                                        <li><a href="#{{ field.id_for_label }}">{{ field.label }}: {{ error }}</a></li>
+                                    {% endfor %}
+                                {% endfor %}
+                                {% for error in form.non_field_errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+
+                    <section class="form-section">
+                        <div class="form-section-heading"><span class="section-icon">01</span><div><h3>Contact information</h3><p>Give employers a simple way to reach you and see your work.</p></div></div>
+                        {% include "app/partials/text_toolbar.html" %}
+                        <div class="field-grid">
+                            <div class="field field-wide">
+                                <label for="{{ form.name.id_for_label }}">{{ form.name.label }} <span class="required">*</span></label>
+                                {{ form.name }}
+                                {% for error in form.name.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                            </div>
+                            <div class="field field-wide">
+                                <label for="{{ form.job_role.id_for_label }}">{{ form.job_role.label }}</label>
+                                {{ form.job_role }}
+                                {% if form.job_role.help_text %}<small class="field-hint">{{ form.job_role.help_text }}</small>{% endif %}
+                                {% for error in form.job_role.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                            </div>
+                            <div class="field">
+                                <label for="{{ form.email.id_for_label }}">{{ form.email.label }} <span class="required">*</span></label>
+                                {{ form.email }}
+                                {% for error in form.email.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                            </div>
+                            <div class="field">
+                                <label for="{{ form.phone_number.id_for_label }}">{{ form.phone_number.label }}</label>
+                                {{ form.phone_number }}
+                                {% for error in form.phone_number.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                            </div>
+                            <div class="field">
+                                <label for="{{ form.linkedin_url.id_for_label }}">{{ form.linkedin_url.label }}</label>
+                                {{ form.linkedin_url }}
+                                {% for error in form.linkedin_url.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                            </div>
+                            <div class="field">
+                                <label for="{{ form.github_url.id_for_label }}">{{ form.github_url.label }}</label>
+                                {{ form.github_url }}
+                                {% for error in form.github_url.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                            </div>
+                            <div class="field field-wide">
+                                <label for="{{ form.portfolio_url.id_for_label }}">{{ form.portfolio_url.label }}</label>
+                                {{ form.portfolio_url }}
+                                {% for error in form.portfolio_url.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="form-section">
+                        <div class="form-section-heading"><span class="section-icon">02</span><div><h3>Professional summary</h3><p>Briefly introduce your background and career goals.</p></div></div>
+                        {% include "app/partials/text_toolbar.html" %}
+                        <div class="field">
+                            <label for="{{ form.summary.id_for_label }}">{{ form.summary.label }}</label>
+                            {{ form.summary }}
+                            <small class="field-hint">{{ form.summary.help_text }}</small>
+                            {% for error in form.summary.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                        </div>
+                    </section>
+
+                    <section class="form-section">
+                        <div class="form-section-heading"><span class="section-icon">03</span><div><h3>Technical skills</h3><p>List your skills by category so employers can scan them quickly.</p></div></div>
+                        {% include "app/partials/text_toolbar.html" %}
+                        <div class="field-grid">
+                            {% for field in form %}
+                                {% if field.name == "programming_languages" or field.name == "frameworks" or field.name == "databases" or field.name == "tools_technologies" or field.name == "skills" %}
+                                <div class="field">
+                                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                    {{ field }}
+                                    {% if field.help_text %}<small class="field-hint">{{ field.help_text }}</small>{% endif %}
+                                    {% for error in field.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </section>
+
+                    <section class="form-section">
+                        <div class="form-section-heading"><span class="section-icon">04</span><div><h3>Work experience</h3><p>Describe your roles and results. Add each achievement on its own line.</p></div></div>
+                        {% include "app/partials/text_toolbar.html" %}
+                        <div class="field">
+                            <label for="{{ form.previous_work_experience.id_for_label }}">{{ form.previous_work_experience.label }}</label>
+                            {{ form.previous_work_experience }}
+                            <small class="field-hint">{{ form.previous_work_experience.help_text }}</small>
+                            {% for error in form.previous_work_experience.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                        </div>
+                        <div class="field">
+                            <label for="{{ form.internship_experience.id_for_label }}">{{ form.internship_experience.label }}</label>
+                            {{ form.internship_experience }}
+                            <small class="field-hint">{{ form.internship_experience.help_text }}</small>
+                            {% for error in form.internship_experience.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                        </div>
+                        <div class="field">
+                            <label for="{{ form.internship_url.id_for_label }}">{{ form.internship_url.label }}</label>
+                            {{ form.internship_url }}
+                            {% if form.internship_url.help_text %}<small class="field-hint">{{ form.internship_url.help_text }}</small>{% endif %}
+                            {% for error in form.internship_url.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                        </div>
+                    </section>
+
+                    <section class="form-section">
+                        <div class="form-section-heading"><span class="section-icon">05</span><div><h3>Projects</h3><p>Include the project name, technologies, description, and your contributions.</p></div></div>
+                        {% include "app/partials/text_toolbar.html" %}
+                        <div class="field">
+                            <label for="{{ form.projects.id_for_label }}">{{ form.projects.label }}</label>
+                            {{ form.projects }}
+                            <small class="field-hint">{{ form.projects.help_text }}</small>
+                            {% for error in form.projects.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                        </div>
+                        <div class="field">
+                            <label for="{{ form.project_url.id_for_label }}">{{ form.project_url.label }}</label>
+                            {{ form.project_url }}
+                            {% if form.project_url.help_text %}<small class="field-hint">{{ form.project_url.help_text }}</small>{% endif %}
+                            {% for error in form.project_url.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                        </div>
+                    </section>
+
+                    <section class="form-section">
+                        <div class="form-section-heading"><span class="section-icon">06</span><div><h3>Education</h3><p>Add your degree, school, and graduation year.</p></div></div>
+                        {% include "app/partials/text_toolbar.html" %}
+                        <div class="field-grid">
+                            <div class="field">
+                                <label for="{{ form.degree.id_for_label }}">{{ form.degree.label }}</label>
+                                {{ form.degree }}
+                                {% for error in form.degree.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                            </div>
+                            <div class="field">
+                                <label for="{{ form.study_stream.id_for_label }}">{{ form.study_stream.label }}</label>
+                                {{ form.study_stream }}
+                                {% for error in form.study_stream.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                            </div>
+                            <div class="field">
+                                <label for="{{ form.university.id_for_label }}">{{ form.university.label }}</label>
+                                {{ form.university }}
+                                {% for error in form.university.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                            </div>
+                            <div class="field">
+                                <label for="{{ form.graduation_year.id_for_label }}">{{ form.graduation_year.label }}</label>
+                                {{ form.graduation_year }}
+                                {% for error in form.graduation_year.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                            </div>
+                            <div class="field field-wide">
+                                <label for="{{ form.cgpa_marks.id_for_label }}">{{ form.cgpa_marks.label }}</label>
+                                {{ form.cgpa_marks }}
+                                {% if form.cgpa_marks.help_text %}<small class="field-hint">{{ form.cgpa_marks.help_text }}</small>{% endif %}
+                                {% for error in form.cgpa_marks.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                            </div>
+                            <div class="field field-wide">
+                                <label for="{{ form.school.id_for_label }}">{{ form.school.label }}</label>
+                                {{ form.school }}
+                                {% for error in form.school.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="form-section">
+                        <div class="form-section-heading"><span class="section-icon">07</span><div><h3>Certifications</h3><p>Add relevant technical certifications and courses.</p></div></div>
+                        {% include "app/partials/text_toolbar.html" %}
+                        <div class="field">
+                            <label for="{{ form.certifications.id_for_label }}">{{ form.certifications.label }}</label>
+                            {{ form.certifications }}
+                            <small class="field-hint">{{ form.certifications.help_text }}</small>
+                            {% for error in form.certifications.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                        </div>
+                    </section>
+
+                    <section class="form-section form-section-last">
+                        <div class="form-section-heading"><span class="section-icon">08</span><div><h3>Achievements & awards</h3><p>Highlight technical accomplishments and recognition.</p></div></div>
+                        {% include "app/partials/text_toolbar.html" %}
+                        <div class="field">
+                            <label for="{{ form.achievements_awards.id_for_label }}">{{ form.achievements_awards.label }}</label>
+                            {{ form.achievements_awards }}
+                            <small class="field-hint">{{ form.achievements_awards.help_text }}</small>
+                            {% for error in form.achievements_awards.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                        </div>
+                    </section>
+                    <div class="form-footer">
+                        <span><span class="required">*</span> Required fields</span>
+                        <button class="button button-primary submit-button" type="submit">Create my resume <span aria-hidden="true">→</span></button>
+                    </div>
+                </form>
+
+                <aside class="preview-column">
+                    <div class="preview-caption"><span class="live-dot"></span> LIVE PREVIEW <span class="preview-caption-right">YOUR FIRST DRAFT</span></div>
+                    <article class="resume-preview" aria-label="Live resume preview">
+                        <div class="resume-preview-pages" data-resume-preview-pages aria-live="polite"></div>
+                        <div class="resume-preview-source" data-resume-preview-source hidden>
+                        <div class="preview-header preview-block" data-preview-page-block data-preview-group="name,job_role,email,phone_number,linkedin_url,github_url" hidden>
+                            <div class="preview-contact">
+                                <h2 data-preview-value="name" data-preview-row="name" data-align-field="name" hidden></h2>
+                                <p class="preview-target-role" data-preview-value="job_role" data-preview-row="job_role" data-align-field="job_role" hidden></p>
+                                <div class="preview-contact-items">
+                                    <span data-preview-row="email" hidden>Email: <span data-preview-value="email"></span></span>
+                                    <span data-preview-row="phone_number" hidden>Phone: <span data-preview-value="phone_number"></span></span>
+                                    <span data-preview-row="linkedin_url" hidden><a data-preview-value="linkedin_url" data-preview-link target="_blank" rel="noopener noreferrer">LinkedIn</a></span>
+                                    <span data-preview-row="github_url" hidden><a data-preview-value="github_url" data-preview-link target="_blank" rel="noopener noreferrer">GitHub</a></span>
+                                </div>
+                            </div>
+                        </div>
+                        <section class="preview-block" data-preview-group="portfolio_url" data-preview-page-block hidden>
+                            <h3>LINKS</h3>
+                            <p data-preview-row="portfolio_url" hidden>Portfolio: <a data-preview-value="portfolio_url" data-preview-link target="_blank" rel="noopener noreferrer"></a></p>
+                        </section>
+                        <section class="preview-block" data-preview-section="summary" data-preview-page-block hidden>
+                            <h3>PROFESSIONAL SUMMARY</h3>
+                            <p data-preview-value="summary" data-align-field="summary"></p>
+                        </section>
+                        <section class="preview-block" data-preview-group="programming_languages,frameworks,databases,tools_technologies,skills" data-preview-page-block hidden>
+                            <h3>TECHNICAL SKILLS</h3>
+                            <p data-preview-row="programming_languages" data-align-field="programming_languages" hidden>Programming Languages: <span data-preview-value="programming_languages"></span></p>
+                            <p data-preview-row="frameworks" data-align-field="frameworks" hidden>Frameworks: <span data-preview-value="frameworks"></span></p>
+                            <p data-preview-row="databases" data-align-field="databases" hidden>Databases: <span data-preview-value="databases"></span></p>
+                            <p data-preview-row="tools_technologies" data-align-field="tools_technologies" hidden>Tools & Technologies: <span data-preview-value="tools_technologies"></span></p>
+                            <p data-preview-row="skills" data-align-field="skills" hidden>Other Skills: <span data-preview-value="skills"></span></p>
+                        </section>
+                        <section class="preview-block" data-preview-section="experience" data-preview-page-block hidden>
+                            <h3>WORK EXPERIENCE</h3>
+                            <div class="preview-preline" data-preview-value="experience" data-align-field="previous_work_experience"></div>
+                        </section>
+                        <section class="preview-block" data-preview-group="internship_experience,internship_url" data-preview-page-block hidden>
+                            <h3>INTERNSHIP EXPERIENCE</h3>
+                            <div class="preview-preline" data-preview-value="internship_experience" data-align-field="internship_experience"></div>
+                            <p data-preview-row="internship_url" data-align-field="internship_experience" hidden>Internship link: <span data-preview-value="internship_url"></span></p>
+                        </section>
+                        <section class="preview-block" data-preview-group="projects,project_url" data-preview-page-block hidden>
+                            <h3>PROJECTS</h3>
+                            <div class="preview-preline" data-preview-value="projects" data-align-field="projects"></div>
+                            <p data-preview-row="project_url" data-align-field="projects" hidden>Live project: <span data-preview-value="project_url"></span></p>
+                        </section>
+                        <section class="preview-block" data-preview-group="degree,study_stream,university,graduation_year,cgpa_marks,school" data-preview-page-block hidden>
+                            <h3>EDUCATION</h3>
+                            <p data-preview-value="education" data-align-field="degree"></p>
+                        </section>
+                        <section class="preview-block" data-preview-section="certifications" data-preview-page-block hidden>
+                            <h3>CERTIFICATIONS</h3>
+                            <div class="preview-preline" data-preview-value="certifications" data-align-field="certifications"></div>
+                        </section>
+                        <section class="preview-block" data-preview-section="achievements_awards" data-preview-page-block hidden>
+                            <h3>ACHIEVEMENTS & AWARDS</h3>
+                            <div class="preview-preline" data-preview-value="achievements_awards" data-align-field="achievements_awards"></div>
+                        </section>
+                        </div>
+                    </article>
+                    <p class="preview-footnote">ATS-friendly tip: keep your resume concise—one page for a fresher and one to two pages with more experience. Use Print / Save PDF when you’re ready.</p>
+                    <div class="preview-download-actions">
+                        <div>
+                            <strong>Step 1 of 2: Save your resume</strong>
+                            <span>Next, you’ll be taken to your resume, where you can download PDF or Word (DOCX).</span>
+                        </div>
+                        <button class="button button-primary" type="submit" form="profile-builder-form">Save &amp; continue to downloads <span aria-hidden="true">→</span></button>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <section class="closing-note">
+            <span class="closing-mark">r.</span>
+            <p>You’ve got a story worth sharing.<br><strong>Let’s make sure it gets noticed.</strong></p>
+            <a href="#builder" aria-label="Back to resume builder">↑</a>
+        </section>
+    </main>
+    <footer class="site-footer"><span>© {% now "Y" %} Resume Studio</span><span>Made for whatever comes next.</span></footer>
+    <div class="builder-download-bar">
+        <span><strong>Step 1:</strong> Save resume <span aria-hidden="true">→</span> <strong>Step 2:</strong> Download PDF or Word (DOCX)</span>
+        <button class="button button-primary" type="submit" form="profile-builder-form">Save &amp; continue to downloads <span aria-hidden="true">→</span></button>
+    </div>
+    <script src="{% static 'app/builder.js' %}" defer></script>
+    
+</body>
+</html>

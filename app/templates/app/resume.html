@@ -1,0 +1,60 @@
+{% load static resume_extras %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="A professional, ATS-friendly resume created with Resume Studio.">
+    <title>{{ profile.name }} — Resume</title>
+    <link rel="stylesheet" href="{% static 'app/styles.css' %}">
+</head>
+<body class="resume-page">
+    <div class="resume-toolbar no-print">
+        <a class="brand" href="{% url 'accept' %}"><span class="brand-mark">r<span>.</span></span><span>resume<span class="brand-light">studio</span></span></a>
+        <div class="toolbar-actions">
+            <a class="button button-quiet" href="{% url 'accept' %}">Back to builder</a>
+            <a class="button button-quiet" href="{% url 'resume_download_docx' profile.pk %}">Download DOCX</a>
+            <a class="button button-primary" href="{% url 'resume_download_pdf' profile.pk %}">Download PDF</a>
+        </div>
+        <nav class="resume-download-bar no-print" aria-label="Download your resume">
+            <span>Resume ready to download</span>
+            <div class="toolbar-actions">
+                <a class="button button-quiet" href="{% url 'resume_download_docx' profile.pk %}">Download DOCX</a>
+                <a class="button button-primary" href="{% url 'resume_download_pdf' profile.pk %}">Download PDF</a>
+            </div>
+        </nav>
+    </div>
+
+    <main class="saved-resume ats-resume">
+        <h1 class="{{ resume.name_alignment|resume_alignment_class }}">{{ resume.name|format_resume_text }}</h1>
+        {% if resume.job_role %}<p class="resume-target-role {{ resume.job_role_alignment|resume_alignment_class }}">{{ resume.job_role|format_resume_text }}</p>{% endif %}
+        {% for heading, items in resume.sections %}
+        <section class="saved-section{% if forloop.counter == 1 or forloop.counter == 2 %} saved-section-no-top-rule{% endif %}">
+            <h2>{{ heading }}</h2>
+            {% for item in items %}
+                {% if item.subheading %}
+                    <h3>{{ item.text }}</h3>
+                {% elif item.contact_items %}
+                    <p class="resume-contact-items">{% for contact_item in item.contact_items %}<span>{% if contact_item.url %}<a href="{{ contact_item.url }}" target="_blank" rel="noopener noreferrer">{{ contact_item.label }}</a>{% else %}<strong>{{ contact_item.label }}:</strong> {{ contact_item.text }}{% endif %}</span>{% if not forloop.last %}<span aria-hidden="true">|</span>{% endif %}{% endfor %}</p>
+                {% elif item.url %}
+                    <p class="{{ item.alignment|resume_alignment_class }}"><strong>{{ item.label }}:</strong> <a href="{{ item.url }}" target="_blank" rel="noopener noreferrer">{{ item.text }}</a></p>
+                {% elif item.bullet %}
+                    <ul class="resume-bullets {{ item.alignment|resume_alignment_class }}"><li>{{ item.text|format_resume_text }}</li></ul>
+                {% elif item.label %}
+                    <p class="{{ item.alignment|resume_alignment_class }}"><strong>{{ item.label }}:</strong> {{ item.text|format_resume_text }}</p>
+                {% else %}
+                    <p class="{{ item.alignment|resume_alignment_class }}">{{ item.text|format_resume_text }}</p>
+                {% endif %}
+            {% endfor %}
+        </section>
+        {% endfor %}
+        <div class="resume-downloads no-print">
+            <p>Your updated, ATS-friendly resume is ready.</p>
+            <div class="toolbar-actions">
+                <a class="button button-quiet" href="{% url 'resume_download_docx' profile.pk %}">Download as DOCX</a>
+                <a class="button button-primary" href="{% url 'resume_download_pdf' profile.pk %}">Download as PDF</a>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

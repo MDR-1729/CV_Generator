@@ -1,0 +1,33 @@
+from django.db import models
+
+# Create your models here.
+class Profile(models.Model):
+    name = models.CharField(max_length=100)
+    job_role = models.CharField(max_length=120, blank=True)
+    email = models.EmailField(unique=True)
+    phone_number = models.CharField(max_length=15, blank=True, null=True)
+    photo = models.ImageField(upload_to="profile_photos/", blank=True)
+    summary = models.TextField(blank=True, null=True)
+    degree = models.CharField(max_length=100, blank=True, null=True)
+    study_stream = models.CharField(max_length=150, blank=True)
+    university = models.CharField(max_length=100, blank=True, null=True)
+    school = models.CharField(max_length=100, blank=True, null=True)
+    previous_work_experience = models.TextField(blank=True, null=True)
+    internship_experience = models.TextField(blank=True)
+    projects = models.TextField(blank=True)
+    certifications = models.TextField(blank=True)
+    programming_languages = models.TextField(blank=True)
+    frameworks = models.TextField(blank=True)
+    databases = models.TextField(blank=True)
+    tools_technologies = models.TextField(blank=True)
+    portfolio_url = models.URLField(blank=True)
+    project_url = models.URLField(blank=True)
+    internship_url = models.URLField(blank=True)
+    graduation_year = models.CharField(max_length=4, blank=True)
+    cgpa_marks = models.CharField(max_length=40, blank=True)
+    text_alignment = models.JSONField(default=dict, blank=True)
+    achievements_awards = models.TextField(blank=True)
+    skills = models.TextField(blank=True, null=True)
+    linkedin_url = models.URLField(blank=True)
+    github_url = models.URLField(blank=True)
+    
